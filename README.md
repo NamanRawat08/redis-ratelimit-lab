@@ -14,6 +14,7 @@ npm start          # server on http://localhost:3000
 npm test           # unit + Redis integration tests
 npm run burst      # burst comparison (run while the server is up)
 npm run race       # race condition demo: naive GET/SET vs Lua
+npm run multi      # 3 server instances: in-memory vs Redis limits
 ```
 
 | Env var | Default | Meaning |
@@ -21,6 +22,7 @@ npm run race       # race condition demo: naive GET/SET vs Lua
 | `PORT` | `3000` | HTTP port |
 | `LIMITER_BACKEND` | `redis` | `redis` (shared across instances) or `memory` (per process) |
 | `REDIS_URL` | `redis://localhost:6379` | Redis connection |
+| `RATE_LIMIT_PREFIX` | `rl` | Redis key prefix; instances with the same prefix share limits |
 
 ## How it works
 
@@ -42,6 +44,19 @@ Lua script limiter    : allowed 10
 ```
 
 The naive version reads the count, checks it in JavaScript, then writes it back. Every server reads the same stale count before anyone writes, so they all allow the request.
+
+## Why Redis? Multiple instances
+
+`npm run multi` starts 3 copies of the server and sends 30 requests from one client round-robin across them, as a load balancer would. The limit is 10:
+
+```
+memory  /api/token-bucket      allowed 30 / 30  <- limit broken!
+memory  /api/sliding-window    allowed 30 / 30  <- limit broken!
+redis   /api/token-bucket      allowed 10 / 30
+redis   /api/sliding-window    allowed 10 / 30
+```
+
+In-memory limiters only see their own instance's traffic, so the real limit becomes `limit × instances`. With Redis, every instance reads and updates the same counters.
 
 ## Endpoints
 
@@ -91,6 +106,7 @@ test/
 scripts/
   burst.js                  burst comparison demo
   race-demo.js              naive vs Lua race condition demo
+  multi-instance.js         3 instances: in-memory vs Redis
 ```
 
 ## Roadmap
@@ -98,6 +114,6 @@ scripts/
 - [x] Stage 1: Express server and middleware
 - [x] Stage 2: In-memory token bucket and sliding window
 - [x] Stage 3: Redis-backed limiters with atomic Lua scripts
-- [ ] Stage 4: Multi-instance test (several servers sharing one Redis)
+- [x] Stage 4: Multi-instance test (several servers sharing one Redis)
 - [ ] Stage 5: Benchmark (throughput and latency) and burst graphs
 - [ ] Stage 6: Write-up on the trade-offs

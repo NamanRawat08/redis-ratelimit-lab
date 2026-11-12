@@ -30,8 +30,10 @@ if (BACKEND === 'memory') {
   slidingWindow = new InMemorySlidingWindow(slidingWindowConfig);
 } else {
   const redis = createRedisClient();
-  tokenBucket = new RedisTokenBucket({ redis, ...tokenBucketConfig });
-  slidingWindow = new RedisSlidingWindow({ redis, ...slidingWindowConfig });
+  // Every instance using the same prefix shares the same counters.
+  const prefix = process.env.RATE_LIMIT_PREFIX || 'rl';
+  tokenBucket = new RedisTokenBucket({ redis, prefix, ...tokenBucketConfig });
+  slidingWindow = new RedisSlidingWindow({ redis, prefix, ...slidingWindowConfig });
 }
 
 // Middleware runs in the order it's registered, for every request.
