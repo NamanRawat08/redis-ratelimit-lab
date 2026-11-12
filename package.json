@@ -8,10 +8,12 @@
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "node --test",
-    "burst": "node scripts/burst.js"
+    "burst": "node scripts/burst.js",
+    "race": "node scripts/race-demo.js"
   },
   "license": "MIT",
   "dependencies": {
-    "express": "^4.22.3"
+    "express": "^4.22.3",
+    "ioredis": "^5.11.1"
   }
 }

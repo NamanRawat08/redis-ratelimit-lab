@@ -6,8 +6,13 @@
 //
 // `keyFn` decides WHO is being limited. By default it's the client's IP, but
 // it could be a user ID or API key instead.
+//
+// `failOpen` decides what happens if the limiter itself breaks (e.g. Redis is down):
+//   true  (default) -> let the request through. The API stays up, unprotected for a while.
+//   false           -> reject with 503. Safer for e.g. login or payment endpoints,
+//                      where letting abuse through is worse than a short outage.
 
-export function rateLimit({ limiter, keyFn = (req) => req.ip }) {
+export function rateLimit({ limiter, keyFn = (req) => req.ip, failOpen = true }) {
   return async function rateLimitMiddleware(req, res, next) {
     try {
       const key = keyFn(req);
@@ -29,9 +34,12 @@ export function rateLimit({ limiter, keyFn = (req) => req.ip }) {
         retryAfterMs: result.retryAfterMs,
       });
     } catch (err) {
-      // Express 4 doesn't catch errors from async functions, so we pass them on.
-      // (In stage 3 we'll decide what to do if Redis is down: "fail open" or "fail closed".)
-      next(err);
+      // We must catch here: Express 4 doesn't catch errors from async functions.
+      console.error('[rateLimit] limiter error:', err.message);
+      if (failOpen) {
+        return next();
+      }
+      return res.status(503).json({ error: 'Rate limiter unavailable' });
     }
   };
 }
