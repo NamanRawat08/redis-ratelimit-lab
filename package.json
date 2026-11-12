@@ -1,0 +1,17 @@
+{
+  "name": "redis-ratelimit-lab",
+  "version": "0.1.0",
+  "description": "Distributed rate limiter for Express, backed by Redis + Lua. Compares token bucket and sliding window under bursts.",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "burst": "node scripts/burst.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}
