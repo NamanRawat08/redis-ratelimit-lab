@@ -15,6 +15,9 @@ npm test           # unit + Redis integration tests
 npm run burst      # burst comparison (run while the server is up)
 npm run race       # race condition demo: naive GET/SET vs Lua
 npm run multi      # 3 server instances: in-memory vs Redis limits
+npm run bench      # limiter throughput, latency and Redis memory
+npm run bench:http # HTTP overhead of each limiter (autocannon)
+npm run bench:burst # traffic-shaping simulation -> docs/*.svg charts
 ```
 
 | Env var | Default | Meaning |
@@ -82,6 +85,62 @@ Both limiters average 10 requests per 10 seconds. Output of `npm run burst`:
 - **Token bucket** recovers gradually: capacity refills at a steady rate, so a client gets a little back every second.
 - **Sliding window** recovers in steps: nothing is freed until old requests leave the window, then a lot frees at once.
 
+## Traffic shaping over time
+
+`npm run bench:burst` replays two traffic patterns against both algorithms with a simulated clock (deterministic, same algorithms as the Lua scripts).
+
+![Steady overload chart](docs/burst-steady-overload.svg)
+
+Under steady overload, the **token bucket smooths output to its refill rate** (1/sec), while the **sliding window lets traffic through in waves**: 10 requests at the start of each window, then nothing for ~7 seconds.
+
+![Bursty client chart](docs/burst-bursty.svg)
+
+| Scenario | Algorithm | Allowed | Most in any 10s span |
+|---|---|---|---|
+| Steady overload (120 sent) | Token bucket | 49 | **19** |
+| | Sliding window | 40 | 10 |
+| Bursty (63 sent) | Token bucket | 37 | **15** |
+| | Sliding window | 30 | 10 |
+
+The sliding window **never** exceeds 10 in any 10-second span. The token bucket can allow up to `capacity + rate × window` (10 + 9 = 19), because a full bucket can be emptied and then refilled within one window. It's more forgiving to bursty clients, but it's a looser guarantee.
+
+## Benchmarks
+
+Apple M1 (8 cores), Redis 8 on localhost, Node.js 24. Absolute numbers depend on the machine; the comparisons are what matter.
+
+**Limiter only** (`npm run bench`): 20,000 `consume()` calls, 50 in flight.
+
+| Limiter | Keys | ops/sec | p50 | p99 |
+|---|---|---|---|---|
+| In-memory token bucket | 1 hot key | ~3.2M | <0.01 ms | 0.04 ms |
+| In-memory sliding window | 1 hot key | ~4.4M | <0.01 ms | 0.02 ms |
+| Redis token bucket | 1 hot key | ~137k | 0.30 ms | 1.50 ms |
+| Redis token bucket | 1,000 keys | ~158k | 0.30 ms | 0.63 ms |
+| Redis sliding window | 1 hot key | ~165k | 0.29 ms | 0.62 ms |
+| Redis sliding window | 1,000 keys | ~161k | 0.29 ms | 0.54 ms |
+
+Redis is ~20× slower than in-memory, because every call is a network round trip. That's the price of a shared, correct limit. Both Redis algorithms cost about the same per call.
+
+**Through HTTP** (`npm run bench:http`): 50 connections, 10 s per route, Redis backend.
+
+| Route | req/sec | p50 | p99 |
+|---|---|---|---|
+| `/api/data` (no limiter) | ~31.9k | 1 ms | 3 ms |
+| `/api/token-bucket` | ~29.7k | 1 ms | 2 ms |
+| `/api/sliding-window` | ~29.3k | 1 ms | 2 ms |
+
+End to end, the Redis limiter costs **~7–8% throughput** and no visible latency at millisecond resolution.
+
+**Redis memory per client** (filled to its limit):
+
+| Limit | Token bucket | Sliding window |
+|---|---|---|
+| 10 | 106 B | 543 B |
+| 100 | 106 B | 4.9 KB |
+| 1,000 | 94 B | 108 KB |
+
+The token bucket stores two numbers whatever the limit. The sliding window log stores one entry per request, so memory grows linearly with the limit. At 1,000 requests/window × 1 million clients, that's ~100 GB vs ~100 MB.
+
 ## Project structure
 
 ```
@@ -107,6 +166,11 @@ scripts/
   burst.js                  burst comparison demo
   race-demo.js              naive vs Lua race condition demo
   multi-instance.js         3 instances: in-memory vs Redis
+bench/
+  limiters.js               throughput, latency, memory
+  http.js                   HTTP load test with autocannon
+  burst-sim.js              traffic-shaping simulation + SVG charts
+docs/                       generated charts and raw benchmark JSON
 ```
 
 ## Roadmap
@@ -115,5 +179,5 @@ scripts/
 - [x] Stage 2: In-memory token bucket and sliding window
 - [x] Stage 3: Redis-backed limiters with atomic Lua scripts
 - [x] Stage 4: Multi-instance test (several servers sharing one Redis)
-- [ ] Stage 5: Benchmark (throughput and latency) and burst graphs
+- [x] Stage 5: Benchmark (throughput and latency) and burst graphs
 - [ ] Stage 6: Write-up on the trade-offs

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 330" width="760" height="330" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" role="img" aria-label="Steady overload: client sends 3 requests/sec">
+<style>
+  svg { --surface:#fcfcfb; --text:#0b0b0b; --muted:#52514e; --grid:#e6e5e1; --axis:#b9b8b2; --offered:#d9d8d3; --s1:#2a78d6; --s2:#eb6834; }
+  @media (prefers-color-scheme: dark) {
+    svg { --surface:#1a1a19; --text:#f0efec; --muted:#c3c2b7; --grid:#2f2f2d; --axis:#5c5b57; --offered:#4a4a46; --s1:#3987e5; --s2:#d95926; }
+  }
+  .bg { fill: var(--surface); }
+  .title { fill: var(--text); font-size: 15px; font-weight: 600; }
+  .sub, .tick, .legend, .axis-label { fill: var(--muted); font-size: 12px; }
+  .value { fill: var(--text); font-size: 11px; }
+  .grid { stroke: var(--grid); stroke-width: 1; }
+  .axis { stroke: var(--axis); stroke-width: 1; }
+  .offered { fill: var(--offered); }
+  .s1 { stroke: var(--s1); fill: none; }
+  .s2 { stroke: var(--s2); fill: none; }
+  .s1-fill { fill: var(--s1); }
+  .s2-fill { fill: var(--s2); }
+</style>
+<rect class="bg" width="760" height="330" rx="8"/>
+<text x="48" y="26" class="title">Steady overload: client sends 3 requests/sec</text>
+<text x="48" y="43" class="sub">Requests per second. Both limiters average 10 requests per 10 seconds.</text>
+<rect x="48" y="50" width="14" height="10" rx="2" class="offered"/><text x="68" y="59" class="legend">Requests sent</text>
+<line x1="175.8" y1="55" x2="189.8" y2="55" class="s1" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 3"/><text x="195.8" y="59" class="legend">Token bucket allowed</text>
+<line x1="349.8" y1="55" x2="363.8" y2="55" class="s2" stroke-width="2.5" stroke-linecap="round"/><text x="369.8" y="59" class="legend">Sliding window allowed</text>
+<line class="grid" x1="48" x2="736" y1="286" y2="286"/><text class="tick" x="40" y="290" text-anchor="end">0</text>
+<line class="grid" x1="48" x2="736" y1="244.4" y2="244.4"/><text class="tick" x="40" y="248.4" text-anchor="end">1</text>
+<line class="grid" x1="48" x2="736" y1="202.8" y2="202.8"/><text class="tick" x="40" y="206.8" text-anchor="end">2</text>
+<line class="grid" x1="48" x2="736" y1="161.2" y2="161.2"/><text class="tick" x="40" y="165.2" text-anchor="end">3</text>
+<line class="grid" x1="48" x2="736" y1="119.6" y2="119.6"/><text class="tick" x="40" y="123.6" text-anchor="end">4</text>
+<line class="grid" x1="48" x2="736" y1="78" y2="78"/><text class="tick" x="40" y="82" text-anchor="end">5</text>
+<path class="offered" d="M48.0,161.2 H65.2 L65.2,161.2 H82.4 L82.4,161.2 H99.6 L99.6,161.2 H116.8 L116.8,161.2 H134.0 L134.0,161.2 H151.2 L151.2,161.2 H168.4 L168.4,161.2 H185.6 L185.6,161.2 H202.8 L202.8,161.2 H220.0 L220.0,161.2 H237.2 L237.2,161.2 H254.4 L254.4,161.2 H271.6 L271.6,161.2 H288.8 L288.8,161.2 H306.0 L306.0,161.2 H323.2 L323.2,161.2 H340.4 L340.4,161.2 H357.6 L357.6,161.2 H374.8 L374.8,161.2 H392.0 L392.0,161.2 H409.2 L409.2,161.2 H426.4 L426.4,161.2 H443.6 L443.6,161.2 H460.8 L460.8,161.2 H478.0 L478.0,161.2 H495.2 L495.2,161.2 H512.4 L512.4,161.2 H529.6 L529.6,161.2 H546.8 L546.8,161.2 H564.0 L564.0,161.2 H581.2 L581.2,161.2 H598.4 L598.4,161.2 H615.6 L615.6,161.2 H632.8 L632.8,161.2 H650.0 L650.0,161.2 H667.2 L667.2,161.2 H684.4 L684.4,161.2 H701.6 L701.6,161.2 H718.8 L718.8,161.2 H736.0 V286 H48 Z"/>
+<path class="s2" stroke-width="2" stroke-linejoin="round" d="M48.0,161.2 H65.2 L65.2,161.2 H82.4 L82.4,161.2 H99.6 L99.6,244.4 H116.8 L116.8,286.0 H134.0 L134.0,286.0 H151.2 L151.2,286.0 H168.4 L168.4,286.0 H185.6 L185.6,286.0 H202.8 L202.8,286.0 H220.0 L220.0,161.2 H237.2 L237.2,161.2 H254.4 L254.4,161.2 H271.6 L271.6,244.4 H288.8 L288.8,286.0 H306.0 L306.0,286.0 H323.2 L323.2,286.0 H340.4 L340.4,286.0 H357.6 L357.6,286.0 H374.8 L374.8,286.0 H392.0 L392.0,161.2 H409.2 L409.2,161.2 H426.4 L426.4,161.2 H443.6 L443.6,244.4 H460.8 L460.8,286.0 H478.0 L478.0,286.0 H495.2 L495.2,286.0 H512.4 L512.4,286.0 H529.6 L529.6,286.0 H546.8 L546.8,286.0 H564.0 L564.0,161.2 H581.2 L581.2,161.2 H598.4 L598.4,161.2 H615.6 L615.6,244.4 H632.8 L632.8,286.0 H650.0 L650.0,286.0 H667.2 L667.2,286.0 H684.4 L684.4,286.0 H701.6 L701.6,286.0 H718.8 L718.8,286.0 H736.0"/>
+<path class="s1" stroke-width="2" stroke-linejoin="round" stroke-dasharray="6 3" d="M48.0,161.2 H65.2 L65.2,161.2 H82.4 L82.4,161.2 H99.6 L99.6,161.2 H116.8 L116.8,202.8 H134.0 L134.0,244.4 H151.2 L151.2,244.4 H168.4 L168.4,244.4 H185.6 L185.6,244.4 H202.8 L202.8,244.4 H220.0 L220.0,244.4 H237.2 L237.2,244.4 H254.4 L254.4,244.4 H271.6 L271.6,244.4 H288.8 L288.8,244.4 H306.0 L306.0,244.4 H323.2 L323.2,244.4 H340.4 L340.4,244.4 H357.6 L357.6,244.4 H374.8 L374.8,244.4 H392.0 L392.0,244.4 H409.2 L409.2,244.4 H426.4 L426.4,244.4 H443.6 L443.6,244.4 H460.8 L460.8,244.4 H478.0 L478.0,244.4 H495.2 L495.2,244.4 H512.4 L512.4,244.4 H529.6 L529.6,244.4 H546.8 L546.8,244.4 H564.0 L564.0,244.4 H581.2 L581.2,244.4 H598.4 L598.4,244.4 H615.6 L615.6,244.4 H632.8 L632.8,244.4 H650.0 L650.0,244.4 H667.2 L667.2,244.4 H684.4 L684.4,244.4 H701.6 L701.6,244.4 H718.8 L718.8,244.4 H736.0"/>
+<text class="tick" x="48" y="304" text-anchor="middle">0s</text>
+<text class="tick" x="134" y="304" text-anchor="middle">5s</text>
+<text class="tick" x="220" y="304" text-anchor="middle">10s</text>
+<text class="tick" x="306" y="304" text-anchor="middle">15s</text>
+<text class="tick" x="392" y="304" text-anchor="middle">20s</text>
+<text class="tick" x="478" y="304" text-anchor="middle">25s</text>
+<text class="tick" x="564" y="304" text-anchor="middle">30s</text>
+<text class="tick" x="650" y="304" text-anchor="middle">35s</text>
+<text class="tick" x="736" y="304" text-anchor="middle">40s</text>
+<text class="axis-label" x="392" y="324" text-anchor="middle">Time</text>
+<line class="axis" x1="48" x2="736" y1="286" y2="286"/>
+</svg>

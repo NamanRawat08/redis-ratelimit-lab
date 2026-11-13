@@ -1,0 +1,79 @@
+{
+  "ops": 20000,
+  "concurrency": 50,
+  "results": [
+    {
+      "limiter": "memory token bucket",
+      "keys": "hot key",
+      "opsPerSec": 3224593,
+      "p50": 0.011459,
+      "p99": 0.039
+    },
+    {
+      "limiter": "memory token bucket",
+      "keys": "1k keys",
+      "opsPerSec": 3112316,
+      "p50": 0.014583,
+      "p99": 0.049375
+    },
+    {
+      "limiter": "memory sliding window",
+      "keys": "hot key",
+      "opsPerSec": 4382961,
+      "p50": 0.011,
+      "p99": 0.023583
+    },
+    {
+      "limiter": "memory sliding window",
+      "keys": "1k keys",
+      "opsPerSec": 3361415,
+      "p50": 0.012042,
+      "p99": 0.053708
+    },
+    {
+      "limiter": "redis token bucket",
+      "keys": "hot key",
+      "opsPerSec": 136915,
+      "p50": 0.304333,
+      "p99": 1.501041
+    },
+    {
+      "limiter": "redis token bucket",
+      "keys": "1k keys",
+      "opsPerSec": 157820,
+      "p50": 0.300125,
+      "p99": 0.630458
+    },
+    {
+      "limiter": "redis sliding window",
+      "keys": "hot key",
+      "opsPerSec": 164580,
+      "p50": 0.285125,
+      "p99": 0.616
+    },
+    {
+      "limiter": "redis sliding window",
+      "keys": "1k keys",
+      "opsPerSec": 160876,
+      "p50": 0.293541,
+      "p99": 0.539541
+    }
+  ],
+  "memory": [
+    {
+      "limit": 10,
+      "tokenBucketBytes": 106,
+      "slidingWindowBytes": 543
+    },
+    {
+      "limit": 100,
+      "tokenBucketBytes": 106,
+      "slidingWindowBytes": 4864
+    },
+    {
+      "limit": 1000,
+      "tokenBucketBytes": 94,
+      "slidingWindowBytes": 110850
+    }
+  ]
+}

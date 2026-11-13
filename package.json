@@ -10,11 +10,17 @@
     "test": "node --test",
     "burst": "node scripts/burst.js",
     "race": "node scripts/race-demo.js",
-    "multi": "node scripts/multi-instance.js"
+    "multi": "node scripts/multi-instance.js",
+    "bench": "node bench/limiters.js",
+    "bench:http": "node bench/http.js",
+    "bench:burst": "node bench/burst-sim.js"
   },
   "license": "MIT",
   "dependencies": {
     "express": "^4.22.3",
     "ioredis": "^5.11.1"
+  },
+  "devDependencies": {
+    "autocannon": "^8.0.0"
   }
 }

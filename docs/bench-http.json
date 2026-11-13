@@ -1,0 +1,27 @@
+{
+  "connections": 50,
+  "durationSec": 10,
+  "results": [
+    {
+      "route": "/api/data",
+      "reqPerSec": 31925,
+      "p50": 1,
+      "p99": 3,
+      "errors": 0
+    },
+    {
+      "route": "/api/token-bucket",
+      "reqPerSec": 29671,
+      "p50": 1,
+      "p99": 2,
+      "errors": 0
+    },
+    {
+      "route": "/api/sliding-window",
+      "reqPerSec": 29317,
+      "p50": 1,
+      "p99": 2,
+      "errors": 0
+    }
+  ]
+}
