@@ -2,7 +2,14 @@
 
 A distributed rate limiter for Express, backed by Redis and Lua scripts. It implements **token bucket** and **sliding window** limiters and compares how they behave under bursts of traffic.
 
-> 🚧 Work in progress. See [Roadmap](#roadmap).
+📄 **[Read the trade-offs write-up](docs/TRADEOFFS.md)**
+
+## Key results
+
+- **Lua makes it race-free.** 100 simultaneous requests across 5 connections, limit 10: a naive `GET`/`SET` limiter allowed **100**; the Lua limiter allowed **10**.
+- **Redis makes it distributed.** 3 server instances, limit 10: in-memory limiters allowed **30**; Redis allowed **10**.
+- **"10 per 10 seconds" means different things.** The sliding window never allowed more than 10 in any 10 s span; the token bucket allowed up to **19**, because it enforces an average rate plus a burst.
+- **Memory, not speed, separates them.** Both cost ~0.3 ms per check and ~7% HTTP throughput. But at a limit of 1,000, the token bucket uses **94 B** per client versus **108 KB** for the sliding window log.
 
 ## Quick start
 
@@ -170,14 +177,13 @@ bench/
   limiters.js               throughput, latency, memory
   http.js                   HTTP load test with autocannon
   burst-sim.js              traffic-shaping simulation + SVG charts
-docs/                       generated charts and raw benchmark JSON
+docs/
+  TRADEOFFS.md              write-up: which algorithm, when, and why
+  *.svg, *.json             generated charts and raw benchmark data
 ```
 
-## Roadmap
+## Possible next steps
 
-- [x] Stage 1: Express server and middleware
-- [x] Stage 2: In-memory token bucket and sliding window
-- [x] Stage 3: Redis-backed limiters with atomic Lua scripts
-- [x] Stage 4: Multi-instance test (several servers sharing one Redis)
-- [x] Stage 5: Benchmark (throughput and latency) and burst graphs
-- [ ] Stage 6: Write-up on the trade-offs
+- Sliding window *counter*: O(1) memory with near-strict limits
+- Per-route and per-user limits (key by API key instead of IP)
+- Run benchmarks against Redis over a real network
